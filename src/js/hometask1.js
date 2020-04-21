@@ -12,9 +12,8 @@
 
  Другими словами: функция должна возвращать в неизменном виде то, что поступает ей на вход
  */
-function returnFirstArgument(argument) {
-    return argument
-}
+
+let returnFirstArgument = (argument) => argument
 
 /*
  Задание 2:
@@ -30,9 +29,8 @@ function returnFirstArgument(argument) {
  Пример:
    sumWithDefaults(10) вернет 110
  */
-function sumWithDefaults(a, b = 100) {
-    return a + b
-}
+
+let sumWithDefaults = (a, b = 100) => a+b
 
 /*
  Задание 3:
@@ -42,9 +40,8 @@ function sumWithDefaults(a, b = 100) {
  Пример:
    returnFnResult(() => 'привет') вернет 'привет'
  */
-function returnFnResult(fn) {
-    return fn()
-}
+
+let returnFnResult = (fn) => fn()
 
 /*
  Задание 4:
@@ -59,11 +56,8 @@ function returnFnResult(fn) {
    console.log(f()); // выведет 12
    console.log(f()); // выведет 13
  */
-function returnCounter(number = 0) {
-    return function f() {
-        return ++number;
-    }
-}
+
+let returnCounter = (number = 0) => () => ++number
 
 /*
  Задание 5 *:
@@ -74,9 +68,8 @@ function returnCounter(number = 0) {
  Пример:
    returnArgumentsArray(1, 2, 3) вернет [1, 2, 3]
  */
-function returnArgumentsArray(...args) {
-    return args
-}
+
+let returnArgumentsArray = (...args) => args
 
 /*
  Задание 6 *:
@@ -95,11 +88,7 @@ console.log(newSum())
 
 */
 
-function bindFunction(fn, ...args) {
-    fn = fn.bind(this, ...args);
-
-    return fn;
-}
+let bindFunction = (fn, ...args) => fn.bind(this, ...args)
 
 export {
     returnFirstArgument,
