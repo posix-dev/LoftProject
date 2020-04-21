@@ -1,5 +1,5 @@
-import { assert } from 'chai';
-import { randomValue as random, randomStringArray } from '../helper';
+import { assert } from 'chai'
+import { randomValue as random, randomStringArray } from '../helper'
 import {
     bindFunction,
     sumWithDefaults,
@@ -7,7 +7,7 @@ import {
     returnCounter,
     returnFirstArgument,
     returnFnResult
-} from '../src/js/hometask1';
+} from '../src/js/hometask1'
 
 describe('ДЗ 1 - функции', () => {
     describe('returnFirstArgument', () => {

@@ -1,5 +1,5 @@
 const HtmlPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const rules = require('./webpack.config.rules');
 const fs = require('fs');
@@ -12,6 +12,7 @@ const files = fs.readdirSync(root)
         const name = path.basename(current, ext);
         const absPath = path.join(root, current);
 
+        // eslint-disable-next-line no-prototype-builtins
         if (!all.hasOwnProperty(ext)) {
             all[ext] = [];
         }
@@ -26,6 +27,7 @@ const entries = files['.js'].reduce((all, { name, absPath }) => {
     return all;
 }, {});
 const html = files['.hbs']
+    // eslint-disable-next-line no-prototype-builtins
     .filter(file => entries.hasOwnProperty(file.name))
     .map((file) => {
         return new HtmlPlugin({
@@ -69,6 +71,6 @@ module.exports = {
             filename: '[name].css',
         }),
         ...html,
-        new CleanWebpackPlugin(['dist'])
+        new CleanWebpackPlugin()
     ]
 };
