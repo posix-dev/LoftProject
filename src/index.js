@@ -1,1 +1,1 @@
-import './js/hometask2'
+import './js/hometask3'
