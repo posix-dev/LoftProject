@@ -1,4 +1,5 @@
-import { INITIAL_VALUE_INDEX, NO_INITIAL_VALUE_INDEX } from './constants'
+const NO_INITIAL_VALUE_INDEX = 1;
+const INITIAL_VALUE_INDEX = 0;
 
 /* ДЗ 2 - работа с массивами и объектами */
 /*
@@ -21,13 +22,13 @@ const forEach = (array, fn) => {
  Посмотрите как работает map и повторите это поведение для массива, который будет передан в параметре array
  */
 const map = (array, fn) => {
-    let newArray = []
+    let newArray = [];
 
     for (let i = 0; i < array.length; i++) {
-        newArray.push(fn(array[i], i, array));
+        newArray = [...newArray, fn(array[i], i, array)];
     }
 
-    return newArray
+    return newArray;
 }
 
 /*
