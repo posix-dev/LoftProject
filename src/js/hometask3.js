@@ -6,7 +6,10 @@ const checkErrors = (array, fn) => {
 }
 
 const checkArray = (array) => {
-    if (!Array.isArray(array) || !array.length) {
+    if (
+        Object.prototype.toString.call(array) !== '[object Array]' ||
+        !array.length
+    ) {
         throw new Error('empty array');
     }
 }
@@ -92,10 +95,10 @@ const isSomeTrue = (array, fn) => {
  3.3: Необходимо выбрасывать исключение в случаях:
    - fn не является функцией (с текстом "fn is not a function")
  */
-function returnBadArguments(fn) {
+function returnBadArguments(fn, ...args) {
     checkFunction(fn);
 
-    return [...arguments].slice(1).filter(item => {
+    return args.filter(item => {
         try {
             fn(item);
         } catch (e) {
