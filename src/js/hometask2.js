@@ -10,7 +10,7 @@ import { INITIAL_VALUE_INDEX, NO_INITIAL_VALUE_INDEX } from './constants'
 
 const forEach = (array, fn) => {
     for (let i = 0; i < array.length; i++) {
-        fn(array[i], [i], array)
+        fn(array[i], i, array);
     }
 }
 
@@ -24,7 +24,7 @@ const map = (array, fn) => {
     let newArray = []
 
     for (let i = 0; i < array.length; i++) {
-        newArray.push(fn(array[i], i, array))
+        newArray.push(fn(array[i], i, array));
     }
 
     return newArray
@@ -37,14 +37,14 @@ const map = (array, fn) => {
  Посмотрите как работает reduce и повторите это поведение для массива, который будет передан в параметре array
  */
 function reduce(array, fn, initial) {
-    const startData = getStartData(initial, array);
-    let value = startData.startValue;
+    const { startValue, startIndex } = startData(initial, array[0]);
+    let value = startValue;
 
-    for (let i = startData.startIndex; i < array.length; i++) {
+    for (let i = startIndex; i < array.length; i++) {
         value = fn(value, array[i], i, array);
     }
 
-    return value
+    return value;
 }
 
 /*
@@ -52,19 +52,13 @@ function reduce(array, fn, initial) {
 * Эта функция берет на себя логику возврата начальных данных для функции reduce
 * о начальном индексе и начальном значении
 *  */
-function getStartData(initial, array) {
-    const startData = {
-        startIndex: INITIAL_VALUE_INDEX,
-        startValue: initial
-    };
-
-    if (!initial) {
-        startData.startIndex = NO_INITIAL_VALUE_INDEX;
-        startData.startValue = array[0];
-    }
-
-    return startData;
-}
+const startData = (initial, initialValueWhenNoInitial) => initial ? {
+    startIndex: INITIAL_VALUE_INDEX,
+    startValue: initial
+} : {
+    startIndex: NO_INITIAL_VALUE_INDEX,
+    startValue: initialValueWhenNoInitial
+};
 
 /*
  Задание 4:
@@ -79,11 +73,11 @@ const upperProps = (obj) => {
 
     for (let key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            newArr.push(key.toUpperCase())
+            newArr.push(key.toUpperCase());
         }
     }
 
-    return newArr
+    return newArr;
 }
 
 /*
@@ -104,11 +98,11 @@ const slice = (array, from = 0, to = array.length) => {
 
     for (let i = from; i < to; i++) {
         if (array[i]) {
-            newArr.push(array[i])
+            newArr.push(array[i]);
         }
     }
 
-    return newArr
+    return newArr;
 }
 
 /*
@@ -120,11 +114,11 @@ const slice = (array, from = 0, to = array.length) => {
 const createProxy = (obj) => {
     const handler = {
         set(target, prop, val) {
-            return Reflect.set(target, prop, val ** 2)
+            return Reflect.set(target, prop, val ** 2);
         }
     }
 
-    return new Proxy(obj, handler)
+    return new Proxy(obj, handler);
 }
 
 export {
