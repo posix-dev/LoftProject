@@ -39,7 +39,11 @@ const skipDefault = (eventName, target) => target.addEventListener(eventName, (e
  Пример:
    emulateClick(document.querySelector('a')) // для указанного элемента должно быть сэмулировано события click
  */
-const emulateClick = (target) => target.click()
+const emulateClick = (target) => {
+    const event = new Event(CLICK_EVENT_TYPE);
+
+    target.dispatchEvent(event);
+}
 
 /*
  Задание 5:

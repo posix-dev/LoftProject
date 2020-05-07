@@ -16,6 +16,9 @@ describe('ДЗ 5.2 - Div D&D', () => {
             it('должна создавать div с произвольными размерами/позицией/цветом', () => {
                 let result = dndPage.createDiv();
 
+                console.log(result.style.width)
+                console.log(result.style.height)
+                console.log(result.style.tagName)
                 assert(result instanceof Element, 'не элемент');
                 assert.equal(result.tagName, 'DIV', 'имя тега не DIV');
                 assert.notEqual(result.style.backgroundColor || result.style.background, '', 'не указан цвет фона');

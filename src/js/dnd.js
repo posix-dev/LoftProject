@@ -42,71 +42,7 @@ const createDiv = () => {
     div.style.top = Math.floor(Math.random() * maxHeight) + 'px';
 
     return div;
-    // return new DivBuilder( 'draggable-div')
-    //     .setWidth(Math.floor(Math.random() * maxWidth))
-    //     .setHeight(Math.floor(Math.random() * maxHeight))
-    //     .setLeft(Math.floor(Math.random() * maxWidth)+ 'px')
-    //     .setTop(Math.floor(Math.random() * maxHeight)+ 'px')
-    //     .setBackgroundColor('#' + Math.floor(Math.random() * 16777215).toString(16))
-    //     .setPosition('relative')
-    //     .build()
 }
-
-// class DivBuilder {
-//     constructor(className) {
-//         this.className = className
-//     }
-//
-//     setWidth(width) {
-//         this.width = width
-//
-//         return this;
-//     }
-//
-//     setBackgroundColor(backgroundColor) {
-//         this.backgroundColor = backgroundColor
-//
-//         return this;
-//     }
-//
-//     setPosition(position) {
-//         this.position = position
-//
-//         return this;
-//     }
-//
-//     setLeft(left) {
-//         this.left = left
-//
-//         return this;
-//     }
-//
-//     setTop(top) {
-//         this.top = top
-//
-//         return this;
-//     }
-//
-//     setHeight(height) {
-//         this.height = height
-//
-//         return this;
-//     }
-//
-//     build() {
-//         const innerDiv = document.createElement('div');
-//
-//         innerDiv.classList.add(this.className);
-//         innerDiv.style.width = this.width;
-//         innerDiv.style.height = this.height;
-//         innerDiv.style.backgroundColor = this.backgroundColor;
-//         innerDiv.style.position = this.position;
-//         innerDiv.style.left = this.left;
-//         innerDiv.style.top = this.top;
-//
-//         return innerDiv
-//     }
-// }
 
 /*
  Функция должна добавлять обработчики событий для перетаскивания элемента при помощи drag and drop
@@ -131,7 +67,6 @@ const drag = (e) => {
 }
 
 const drop = (e) => {
-    console.log('here')
     const dropObject = e.target
     const dataTransfer = e.dataTransfer
     const dataLeft = dataTransfer.getData('left');
@@ -142,7 +77,6 @@ const drop = (e) => {
         e.stopPropagation(); // stops the browser from redirecting.
     }
 
-    console.dir(dataLeft + ' ' + dataTop)
     dropObject.style.left = dataLeft;
     dropObject.style.top = dataTop;
     dataTransfer.clearData()
