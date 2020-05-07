@@ -5,32 +5,5 @@
     <title>{{htmlWebpackPlugin.options.title}}</title>
 </head>
 <body>
-
-<script type="application/javascript">
-    const deleteTextNodesRecursive = (where) => {
-        if (where.childNodes.length > 0) {
-            console.log(where.childNodes)
-            where.childNodes.forEach(item => {
-                if(item.data === " ") {
-                    item.data = "";
-                    return item;
-                }
-                if (item.nodeType === Node.TEXT_NODE) {
-                    debugger;
-                    const parent = item.parentNode
-                    parent.removeChild(item)
-                } else if (item.nodeType === Node.ELEMENT_NODE) {
-                    debugger;
-                    deleteTextNodesRecursive(item)
-                }
-            })
-        }
-
-        return where;
-    }
-
-    document.body.innerHTML = '<span> <div> <b>привет </b> </div> <p>loftchool</p> !!! </span>'
-    deleteTextNodesRecursive(document.body)
-</script>
 </body>
 </html>

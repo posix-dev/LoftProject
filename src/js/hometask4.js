@@ -120,7 +120,7 @@ const deleteTextNodes = (where) => {
    должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
 const deleteTextNodesRecursive = (where) => {
-    if (where.childNodes !== undefined && where.childNodes.length > 0) {
+    if (where.childNodes && where.childNodes.length) {
         where.childNodes.forEach(item => {
             if (item.data === ' ') {
                 item.data = '';
