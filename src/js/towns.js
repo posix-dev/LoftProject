@@ -136,7 +136,7 @@ reloadBtn.addEventListener('click', async () => {
 });
 
 filterInput.addEventListener('keyup', (e) => {
-    if (e.target.value === '') {
+    if (!e.target.value) {
         filterResult.innerHTML = '';
     } else {
         const townsList = getTownFromStorage();
@@ -147,7 +147,7 @@ filterInput.addEventListener('keyup', (e) => {
     }
 });
 
-document.addEventListener('DOMContentLoaded', async () => await startLoadingTowns())
+document.addEventListener('DOMContentLoaded', async () => startLoadingTowns())
 
 export {
     loadAndGetTowns,
