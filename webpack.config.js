@@ -16,10 +16,10 @@ rules.push({
 module.exports = {
     entry: {
         main: './src/main.js',
-        dnd: './src/js/dnd.js'
+        towns: './src/js/towns.js'
     },
     devServer: {
-        index: 'dnd.html'
+        index: 'towns.html'
     },
     output: {
         filename: '[name].[hash].js',
@@ -41,13 +41,14 @@ module.exports = {
         new HtmlPlugin({
             title: 'Main Homework',
             template: 'main.hbs',
+            filename: 'main.html',
             chunks: ['main']
         }),
         new HtmlPlugin({
-            title: 'Div Drag And Drop',
-            template: 'dnd.hbs',
-            filename: 'dnd.html',
-            chunks: ['dnd']
+            title: 'Towns',
+            template: 'towns.hbs',
+            filename: 'towns.html',
+            chunks: ['towns']
         }),
         new CleanWebpackPlugin()
     ]
