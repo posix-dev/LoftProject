@@ -39,14 +39,171 @@ const addNameInput = homeworkContainer.querySelector('#add-name-input');
 // текстовое поле со значением cookie
 const addValueInput = homeworkContainer.querySelector('#add-value-input');
 // кнопка "добавить cookie"
-const addButton = homeworkContainer.querySelector('#add-button');
+const addCookieButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
-filterNameInput.addEventListener('keyup', function() {
+const addRowTable = (name, value) => {
+    const tr = document.createElement('tr');
+    const tdName = document.createElement('td');
+    const tdValue = document.createElement('td');
+    const tdDel = document.createElement('td');
+    const iconWrapper = document.createElement('div');
+    const icon = document.createElement('i');
+
+    tdName.innerText = decodeURI(name);
+    tdValue.innerText = decodeURI(value);
+
+    icon.dataset.name = decodeURI(name);
+    icon.classList.add('remove-icon');
+
+    iconWrapper.classList.add('remove-wrapper')
+    iconWrapper.appendChild(icon)
+
+    tdDel.appendChild(iconWrapper);
+
+    tr.classList.add(name);
+    tr.appendChild(tdName);
+    tr.appendChild(tdValue);
+    tr.appendChild(tdDel);
+    listTable.appendChild(tr);
+}
+
+const updateRowTable = (name, value) => {
+    Array.from(listTable.children).forEach(item => {
+        if (item.firstChild.textContent === name) {
+            item.children[1].textContent = value;
+        }
+    })
+}
+
+const deleteRowTable = tr => tr.parentNode.removeChild(tr);
+
+const trimAndReplaceSpace = (value) => value.trim().replace(/%20/g, ' ');
+
+const getMatchList = (matchedString, list) => list.filter(item =>
+    (isMatching(item.name, matchedString)) || (isMatching(item.value, matchedString))
+);
+
+const isMatching = (full = '', chunk = '') => {
+    let lowCaseFull = full.toLowerCase();
+    let lowCaseChunk = chunk.toLowerCase();
+
+    return lowCaseFull.includes(lowCaseChunk);
+}
+
+const getCookie = (name) => {
+    name = trimAndReplaceSpace(name)
+    let matches = document.cookie.match(new RegExp(
+        `(?:^|; )${name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1')}=([^;]*)`
+    ));
+
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+const setCookie = (name, value, options = {}) => {
+    options = {
+        path: '/',
+        ...options
+    };
+
+    if (options.expires instanceof Date) {
+        options.expires = options.expires.toUTCString();
+    }
+
+    let updatedCookie = encodeURIComponent(trimAndReplaceSpace(name))
+        + '=' + encodeURIComponent(trimAndReplaceSpace(value));
+
+    for (let optionKey in options) {
+        updatedCookie += '; ' + optionKey;
+        let optionValue = options[optionKey];
+
+        if (optionValue !== true) {
+            updatedCookie += '=' + optionValue;
+        }
+    }
+
+    document.cookie = updatedCookie;
+}
+
+const render = (list) => {
+    listTable.innerHTML = '';
+    list.forEach(cookie => {
+        if (cookie) {
+            addRowTable(cookie.name, cookie.value);
+        }
+    });
+}
+
+filterNameInput.addEventListener('keyup', (e) => {
     // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
+    let cookies = getParsedCookies();
+    let matchedList = getMatchList(e.target.value, cookies);
+
+    render(matchedList);
 });
 
-addButton.addEventListener('click', () => {
+addCookieButton.addEventListener('click', () => {
     // здесь можно обработать нажатие на кнопку "добавить cookie"
+    const name = trimAndReplaceSpace(addNameInput.value);
+    const value = trimAndReplaceSpace(addValueInput.value);
+
+    try {
+        if (getCookie(name)) {
+            updateRowTable(name, value);
+        } else {
+            if (!name || !value) {
+                throw new Error('Имя и значение cookie должны быть заполнены')
+            } else {
+                addRowTable(name, value);
+                addNameInput.value = '';
+                addValueInput.value = '';
+                addNameInput.focus();
+            }
+        }
+
+        setCookie(name, value);
+    } catch (e) {
+        alert(e.message);
+    }
+});
+
+const deleteCookie = name => {
+    setCookie(name, '', {
+        'max-age': -1
+    });
+}
+
+listTable.addEventListener('click', e => {
+    if (e.target.classList.contains('remove-wrapper')
+        || e.target.classList.contains('remove-icon')
+    ) {
+        const tr = e.target.closest('tr');
+
+        deleteCookie(tr.className);
+        deleteRowTable(tr);
+    }
+})
+
+const getParsedCookies = () => {
+    let newArray = [];
+
+    document.cookie.split(';').forEach(item => {
+        let cookiesArray = item.split('=');
+
+        if (cookiesArray[0] && cookiesArray[1]) {
+            newArray.push({
+                name: trimAndReplaceSpace(cookiesArray[0]),
+                value: trimAndReplaceSpace(cookiesArray[1])
+            });
+        }
+    });
+
+    return newArray;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    let cookies = getParsedCookies();
+
+    render(cookies);
 });

@@ -1,4 +1,5 @@
 import assert from 'assert';
+
 let template = require('../cookie-content.hbs');
 
 function getCookies() {
@@ -8,6 +9,8 @@ function getCookies() {
         .map(cookie => cookie.match(/^([^=]+)=(.+)/))
         .reduce((obj, [, name, value]) => {
             obj[name] = value;
+
+            console.log('hhhhheeee' + obj[name] + '   ' + value)
 
             return obj;
         }, {});
@@ -37,7 +40,7 @@ describe('ДЗ 7.2 - Cookie editor', () => {
             }
         });
 
-        it('на старнице должны быть элементы с нужными id', () => {
+        it('на странице должны быть элементы с нужными id', () => {
             filterNameInput = homeworkContainer.querySelector('#filter-name-input');
             addNameInput = homeworkContainer.querySelector('#add-name-input');
             addValueInput = homeworkContainer.querySelector('#add-value-input');
@@ -64,6 +67,7 @@ describe('ДЗ 7.2 - Cookie editor', () => {
             addButton.click();
 
             cookies = getCookies();
+
             assert(cookies.hasOwnProperty(addNameInput.value), 'cookie не добавлена в барузер');
             assert.equal(cookies[addNameInput.value], addValueInput.value, 'cookie не добавлена в барузер');
             assert.equal(listTable.children.length, 1, 'cookie не добавлена в таблицу');
@@ -116,7 +120,7 @@ describe('ДЗ 7.2 - Cookie editor', () => {
             addButton.click();
 
             rows = [...listTable.children];
-            changedRow = rows.filter(row => row.children[1].textContent.trim() == 'other-test-cookie-value-2');
+            changedRow = rows.filter(row => row.children[1].textContent.trim() === 'other-test-cookie-value-2');
             assert.equal(changedRow.length, 1, 'новое значение для cookie не найдено в таблице');
         });
 
