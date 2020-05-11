@@ -44,9 +44,6 @@ const addButton = homeworkContainer.querySelector('#add-button');
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
 filterNameInput.addEventListener('keyup', function() {
-    addNameInput
-    addValueInput
-    listTable
     // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
 });
 
