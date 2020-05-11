@@ -10,8 +10,6 @@ function getCookies() {
         .reduce((obj, [, name, value]) => {
             obj[name] = value;
 
-            console.log('hhhhheeee' + obj[name] + '   ' + value)
-
             return obj;
         }, {});
 }
