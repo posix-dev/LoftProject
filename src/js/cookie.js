@@ -1,3 +1,6 @@
+import { addRowAction, deleteRowAction, filterAction, initAction } from './actions';
+import { INIT_ACTION, ROW_ADD_ACTION, ROW_DELETE_ACTION, ROW_FILTER_ACTION } from './constant';
+
 /*
  ДЗ 7 - Создать редактор cookie с возможностью фильтрации
 
@@ -43,6 +46,61 @@ const addCookieButton = homeworkContainer.querySelector('#add-button');
 // таблица со списком cookie
 const listTable = homeworkContainer.querySelector('#list-table tbody');
 
+let currentState = {
+    cookies: '',
+}
+
+const reducer = (action, state) => {
+    switch (action.type) {
+        case INIT_ACTION:
+        case ROW_DELETE_ACTION:
+        case ROW_ADD_ACTION:
+            return { ...state, cookies: getParsedCookies() }
+        case ROW_FILTER_ACTION:
+            return { ...state, cookies: action.payload }
+        default:
+            return state;
+    }
+}
+
+const store = {
+    dispatch: (action) => {
+        if ('internalAction' in action) {
+            action.internalAction()
+        }
+        currentState = reducer(action, currentState)
+        render(currentState)
+    }
+}
+
+const render = (currentState) => {
+    listTable.innerHTML = '';
+    currentState.cookies.forEach(cookie => {
+        if (cookie) {
+            addRowTable(cookie.name, cookie.value);
+        }
+    });
+}
+
+const getParsedCookies = () => {
+    let newArray = [];
+
+    document.cookie.split(';').forEach(item => {
+        let cookiesArray = item.split('=');
+
+        if (cookiesArray[0] && cookiesArray[1]) {
+            newArray.push({
+                name: trimAndReplaceSpace(cookiesArray[0]),
+                value: trimAndReplaceSpace(cookiesArray[1])
+            });
+        }
+    });
+
+    return newArray;
+}
+
+const trimAndReplaceSpace = (value) => value.trim().replace(/%20/g, ' ');
+
 const addRowTable = (name, value) => {
     const tr = document.createElement('tr');
     const tdName = document.createElement('td');
@@ -79,8 +137,6 @@ const updateRowTable = (name, value) => {
 
 const deleteRowTable = tr => tr.parentNode.removeChild(tr);
 
-const trimAndReplaceSpace = (value) => value.trim().replace(/%20/g, ' ');
-
 const getMatchList = (matchedString, list) => list.filter(item =>
     (isMatching(item.name, matchedString)) || (isMatching(item.value, matchedString))
 );
@@ -114,6 +170,7 @@ const setCookie = (name, value, options = {}) => {
     let updatedCookie = encodeURIComponent(trimAndReplaceSpace(name))
         + '=' + encodeURIComponent(trimAndReplaceSpace(value));
 
+    // eslint-disable-next-line guard-for-in
     for (let optionKey in options) {
         updatedCookie += '; ' + optionKey;
         let optionValue = options[optionKey];
@@ -126,28 +183,19 @@ const setCookie = (name, value, options = {}) => {
     document.cookie = updatedCookie;
 }
 
-const render = (list) => {
-    listTable.innerHTML = '';
-    list.forEach(cookie => {
-        if (cookie) {
-            addRowTable(cookie.name, cookie.value);
-        }
-    });
-}
-
 filterNameInput.addEventListener('keyup', (e) => {
-    // здесь можно обработать нажатия на клавиши внутри текстового поля для фильтрации cookie
-    let cookies = getParsedCookies();
-    let matchedList = getMatchList(e.target.value, cookies);
-
-    render(matchedList);
+    filterAction.payload = getMatchList(e.target.value, getParsedCookies())
+    store.dispatch(filterAction);
 });
 
 addCookieButton.addEventListener('click', () => {
-    // здесь можно обработать нажатие на кнопку "добавить cookie"
     const name = trimAndReplaceSpace(addNameInput.value);
     const value = trimAndReplaceSpace(addValueInput.value);
 
+    store.dispatch(addRowAction(() => addCookie(name, value)));
+});
+
+const addCookie = (name, value) => {
     try {
         if (getCookie(name)) {
             updateRowTable(name, value);
@@ -155,7 +203,7 @@ addCookieButton.addEventListener('click', () => {
             if (!name || !value) {
                 throw new Error('Имя и значение cookie должны быть заполнены')
             } else {
-                addRowTable(name, value);
+                // addRowTable(name, value);
                 addNameInput.value = '';
                 addValueInput.value = '';
                 addNameInput.focus();
@@ -166,7 +214,7 @@ addCookieButton.addEventListener('click', () => {
     } catch (e) {
         alert(e.message);
     }
-});
+}
 
 const deleteCookie = name => {
     setCookie(name, '', {
@@ -174,36 +222,21 @@ const deleteCookie = name => {
     });
 }
 
-listTable.addEventListener('click', e => {
-    if (e.target.classList.contains('remove-wrapper')
-        || e.target.classList.contains('remove-icon')
+const deleteRow = (item) => {
+    if (item.classList.contains('remove-wrapper')
+        || item.classList.contains('remove-icon')
     ) {
-        const tr = e.target.closest('tr');
+        const tr = item.closest('tr');
 
         deleteCookie(tr.className);
         deleteRowTable(tr);
     }
-})
-
-const getParsedCookies = () => {
-    let newArray = [];
-
-    document.cookie.split(';').forEach(item => {
-        let cookiesArray = item.split('=');
-
-        if (cookiesArray[0] && cookiesArray[1]) {
-            newArray.push({
-                name: trimAndReplaceSpace(cookiesArray[0]),
-                value: trimAndReplaceSpace(cookiesArray[1])
-            });
-        }
-    });
-
-    return newArray;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    let cookies = getParsedCookies();
+listTable.addEventListener('click', e => {
+    store.dispatch(deleteRowAction(() => deleteRow(e.target)))
+})
 
-    render(cookies);
+document.addEventListener('DOMContentLoaded', () => {
+    store.dispatch(initAction)
 });
