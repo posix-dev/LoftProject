@@ -103,27 +103,11 @@ const trimAndReplaceSpace = (value) => value.trim().replace(/%20/g, ' ');
 
 const addRowTable = (name, value) => {
     const tr = document.createElement('tr');
-    const tdName = document.createElement('td');
-    const tdValue = document.createElement('td');
-    const tdDel = document.createElement('td');
-    const iconWrapper = document.createElement('div');
-    const icon = document.createElement('i');
-
-    tdName.innerText = decodeURI(name);
-    tdValue.innerText = decodeURI(value);
-
-    icon.dataset.name = decodeURI(name);
-    icon.classList.add('remove-icon');
-
-    iconWrapper.classList.add('remove-wrapper')
-    iconWrapper.appendChild(icon)
-
-    tdDel.appendChild(iconWrapper);
 
     tr.classList.add(name);
-    tr.appendChild(tdName);
-    tr.appendChild(tdValue);
-    tr.appendChild(tdDel);
+    tr.innerHTML = '<td>' + decodeURI(name) + '</td>' +
+        '<td>' + decodeURI(value) + '</td>' +
+        '<td><div class="remove-wrapper"><i class="remove-icon"></i></div></td>'
     listTable.appendChild(tr);
 }
 
@@ -135,7 +119,7 @@ const updateRowTable = (name, value) => {
     })
 }
 
-const deleteRowTable = tr => tr.parentNode.removeChild(tr);
+const deleteRowTable = tr => tr.remove();
 
 const getMatchList = (matchedString, list) => list.filter(item =>
     (isMatching(item.name, matchedString)) || (isMatching(item.value, matchedString))
@@ -212,7 +196,7 @@ const addCookie = (name, value) => {
 
         setCookie(name, value);
     } catch (e) {
-        alert(e.message);
+        console.log(e.message);
     }
 }
 
