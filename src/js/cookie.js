@@ -1,5 +1,6 @@
 import { addRowAction, deleteRowAction, filterAction, initAction } from './actions';
 import { INIT_ACTION, ROW_ADD_ACTION, ROW_DELETE_ACTION, ROW_FILTER_ACTION } from './constant';
+import { CLICK_EVENT, DOM_CONTENT_LOADED_EVENT, KEYUP_EVENT } from './ui/uiEvent';
 
 /*
  ДЗ 7 - Создать редактор cookie с возможностью фильтрации
@@ -134,9 +135,10 @@ const isMatching = (full = '', chunk = '') => {
 
 const getCookie = (name) => {
     name = trimAndReplaceSpace(name)
-    let matches = document.cookie.match(new RegExp(
-        `(?:^|; )${name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1')}=([^;]*)`
-    ));
+    let matches =
+        document.cookie.match(
+            new RegExp(`(?:^|; )${name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1')}=([^;]*)`)
+        );
 
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
@@ -167,12 +169,12 @@ const setCookie = (name, value, options = {}) => {
     document.cookie = updatedCookie;
 }
 
-filterNameInput.addEventListener('keyup', (e) => {
+filterNameInput.addEventListener(KEYUP_EVENT, (e) => {
     filterAction.payload = getMatchList(e.target.value, getParsedCookies())
     store.dispatch(filterAction);
 });
 
-addCookieButton.addEventListener('click', () => {
+addCookieButton.addEventListener(CLICK_EVENT, () => {
     const name = trimAndReplaceSpace(addNameInput.value);
     const value = trimAndReplaceSpace(addValueInput.value);
 
@@ -217,10 +219,10 @@ const deleteRow = (item) => {
     }
 }
 
-listTable.addEventListener('click', e => {
+listTable.addEventListener(CLICK_EVENT, e => {
     store.dispatch(deleteRowAction(() => deleteRow(e.target)))
 })
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener(DOM_CONTENT_LOADED_EVENT, () => {
     store.dispatch(initAction)
 });
